@@ -3,11 +3,11 @@ provider "azurerm" {
     version = "~>2.0"
     features {}
 
-    subscription_id = "dcc5e51e-bfd1-4d97-9ff3-9d93d233654a"
-    client_id       = "e2b27df1-e446-41c3-80bb-807e8f18da99"
-    client_secret   = "eb6c827e-87a1-4f39-b62f-132972d32c85"
-    tenant_id       = "d5edf8ac-7c07-42ea-b14f-9b60998540d1"
-}
+    subscription_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_id       = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    client_secret   = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    tenant_id       = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+} 
 
 # Creates a resource group if it doesn't exist
 resource "azurerm_resource_group" "myterraformgroup" {
