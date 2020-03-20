@@ -1,7 +1,5 @@
-# Configure the Microsoft Azure Provider
+# Configures the Microsoft Azure Provider
 provider "azurerm" {
-    # The "feature" block is required for AzureRM provider 2.x. 
-    # If you are using version 1.x, the "features" block is not allowed.
     version = "~>2.0"
     features {}
 
@@ -11,7 +9,7 @@ provider "azurerm" {
     tenant_id       = "d5edf8ac-7c07-42ea-b14f-9b60998540d1"
 }
 
-# Create a resource group if it doesn't exist
+# Creates a resource group if it doesn't exist
 resource "azurerm_resource_group" "myterraformgroup" {
     name     = "testResourceGroup"
     location = "eastus"
@@ -21,7 +19,7 @@ resource "azurerm_resource_group" "myterraformgroup" {
     }
 }
 
-# Create virtual network
+# Creates virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
     address_space       = ["10.0.0.0/16"]
@@ -33,7 +31,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
     }
 }
 
-# Create subnet
+# Creates subnet
 resource "azurerm_subnet" "myterraformsubnet" {
     name                 = "mySubnet"
     resource_group_name  = azurerm_resource_group.myterraformgroup.name
@@ -41,7 +39,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
     address_prefix       = "10.0.1.0/24"
 }
 
-# Create public IPs
+# Creates public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
     name                         = "myPublicIP"
     location                     = "eastus"
@@ -53,7 +51,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
     }
 }
 
-# Create Network Security Group and rule
+# Creates Network Security Group and rule
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "myNetworkSecurityGroup"
     location            = "eastus"
@@ -76,7 +74,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     }
 }
 
-# Create network interface
+# Creates network interface
 resource "azurerm_network_interface" "myterraformnic" {
     name                      = "myNIC"
     location                  = "eastus"
@@ -94,13 +92,13 @@ resource "azurerm_network_interface" "myterraformnic" {
     }
 }
 
-# Connect the security group to the network interface
+# Connects the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
     network_interface_id      = azurerm_network_interface.myterraformnic.id
     network_security_group_id = azurerm_network_security_group.myterraformnsg.id
 }
 
-# Generate random text for a unique storage account name
+# Generates random text for a unique storage account name
 resource "random_id" "randomId" {
     keepers = {
         # Generate a new ID only when a new resource group is defined
@@ -110,7 +108,7 @@ resource "random_id" "randomId" {
     byte_length = 8
 }
 
-# Create storage account for boot diagnostics
+# Creates storage account for boot diagnostics
 resource "azurerm_storage_account" "mystorageaccount" {
     name                        = "diag${random_id.randomId.hex}"
     resource_group_name         = azurerm_resource_group.myterraformgroup.name
@@ -123,7 +121,7 @@ resource "azurerm_storage_account" "mystorageaccount" {
     }
 }
 
-# Create virtual machine
+# Creates virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
     name                  = "myVM"
     location              = "eastus"
