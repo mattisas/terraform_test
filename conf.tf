@@ -101,7 +101,7 @@ resource "azurerm_network_interface_security_group_association" "example" {
 # Generates random text for a unique storage account name
 resource "random_id" "randomId" {
     keepers = {
-        # Generate a new ID only when a new resource group is defined
+        # Generates a new ID only when a new resource group is defined
         resource_group = azurerm_resource_group.myterraformgroup.name
     }
     
@@ -158,4 +158,51 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     tags = {
         environment = "Terraform Demo"
     }
+}
+
+#Creates VM backup policy
+resource "azurerm_recovery_services_vault" "vault" {
+    name    = "azurerecoveryvault"
+    location = azurerm_resource_group.myterraformgroup.location
+    resource_group_name = azurerm_resource_group.myterraformgroup.name
+    sku     = "Standard"
+}
+
+resource "azurerm_backup_policy_vm" "protectionpolicy" {
+  name                = "azurerecoverypolicy1"
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  recovery_vault_name = azurerm_recovery_services_vault.vault.name
+
+  backup {
+    frequency = "Daily"
+    time      = "23:00"
+  }
+  retention_daily {
+    count = 10
+  }
+
+  retention_weekly {
+    count    = 42
+    weekdays = ["Sunday", "Wednesday", "Friday", "Saturday"]
+  }
+
+  retention_monthly {
+    count    = 7
+    weekdays = ["Sunday", "Wednesday"]
+    weeks    = ["First", "Last"]
+  }
+
+  retention_yearly {
+    count    = 77
+    weekdays = ["Sunday"]
+    weeks    = ["Last"]
+    months   = ["January"]
+  }
+}
+
+resource "azurerm_backup_protected_vm" "myterraformvmbackup" {
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  recovery_vault_name = azurerm_recovery_services_vault.vault.name
+  source_vm_id        = azurerm_linux_virtual_machine.myterraformvm.id
+  backup_policy_id    = azurerm_backup_policy_vm.protectionpolicy.id
 }
